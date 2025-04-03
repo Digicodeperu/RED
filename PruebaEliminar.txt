@@ -1,4 +1,0 @@
-Este es un archivo de prueba para testear agregar y eliminar.
-Línea 2
-Línea 3
-Línea 4
