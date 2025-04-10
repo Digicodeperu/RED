@@ -11,12 +11,12 @@ REPO = "raw"
 RAMA = "main"
 TOKEN = "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"
 
+# Configuración visual
 st.set_page_config(page_title="Proforma ServiComp", layout="wide")
-
-st.markdown("<h1 style='text-align:center; color:#1e3d59;'>Proforma Digital - ServiComp</h1>",
-            unsafe_allow_html=True)
+st.markdown("<h1 style='text-align:center; color:#1e3d59;'>Proforma Digital - ServiComp</h1>", unsafe_allow_html=True)
 st.markdown("---")
 
+# Entrada del código
 codigo = st.text_input("Ingrese el código de proforma (4 dígitos):", max_chars=4)
 
 if codigo and len(codigo) == 4 and codigo.isdigit():
@@ -37,22 +37,20 @@ if codigo and len(codigo) == 4 and codigo.isdigit():
         df = pd.read_excel(BytesIO(binario))
 
         # Procesar columna FOTO como link
-        df["FOTO"] = df["FOTO"].apply(
-            lambda url: f"<a href='{url}' target='_blank'>🔗 Ver Foto</a>" if pd.notna(url) else "")
+        if "FOTO" in df.columns:
+            df["FOTO"] = df["FOTO"].apply(
+                lambda url: f"<a href='{url}' target='_blank'>🔗 Ver Foto</a>" if pd.notna(url) else "")
 
+        # Mostrar resultados
         st.markdown("### Resultado de la proforma:")
-        st.markdown("---")
+        st.write("📦 Ítems encontrados:", len(df))
 
         # Mostrar tabla como HTML
-        st.write("📦 Ítems encontrados:", len(df))
-        st.markdown(
-            df.to_html(escape=False, index=False),
-            unsafe_allow_html=True
-        )
+        st.markdown(df.to_html(escape=False, index=False), unsafe_allow_html=True)
 
-        # Mostrar total DISTRIB
+        # Calcular total DISTRIB
         total = 0
-        for v in df["DISTRIB"]:
+        for v in df.get("DISTRIB", []):
             try:
                 valor = str(v).replace("S/.", "").replace(",", "").strip()
                 total += int(valor)
@@ -68,6 +66,8 @@ if codigo and len(codigo) == 4 and codigo.isdigit():
     except requests.exceptions.HTTPError:
         st.error("No se encontró la proforma solicitada.")
     except Exception as e:
-        st.error(f"Ocurrió un error inesperado al cargar la proforma.")
+        st.error("Ocurrió un error inesperado al cargar la proforma.")
+        st.exception(e)
+
 else:
     st.info("Ingrese un código de 4 dígitos para cargar la proforma.")
