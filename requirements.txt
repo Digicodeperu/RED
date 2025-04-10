@@ -1,4 +1,4 @@
-streamlit
-pandas
+flask
 requests
+pandas
 openpyxl
