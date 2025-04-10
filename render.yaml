@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: proforma-api
+    env: python
+    buildCommand: ""
+    startCommand: "python api_flask.py"
+    envVars:
+      - key: GITHUB_TOKEN
+        value: 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
