@@ -8,7 +8,7 @@ import os
 # --- CONFIGURACIÓN ---
 TOKEN = os.environ.get("GITHUB_TOKEN")  # Se lee desde el entorno seguro en Render
 GITHUB_USER = "digicodeperu"
-REPO = "raw"           # Nombre del repo donde están los .xlsx
+REPO = "RAW"           # Nombre del repo donde están los .xlsx
 BRANCH = "main"        # Rama del repo privado donde subís los archivos
 
 app = Flask(__name__)
