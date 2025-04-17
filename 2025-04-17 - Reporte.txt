@@ -1,7 +1,7 @@
 wmic csproduct get name, vendor, identifyingNumber:
-IdentifyingNumber  Name               Vendor           
+IdentifyingNumber  Name  Vendor  
 
-8CG4250BY5         HP ProBook 450 G1  Hewlett-Packard  
+PF14AJV5           81LW  LENOVO  
 
 
 
@@ -10,7 +10,7 @@ IdentifyingNumber  Name               Vendor
 wmic path softwarelicensingservice get OA3xOriginalProductKey:
 OA3xOriginalProductKey         
 
-TNBG2-FQP9Y-438X6-PQMC9-YDTBP  
+HVNBV-3JQ7H-RRQTC-CT9Q8-CPQFC  
 
 
 
