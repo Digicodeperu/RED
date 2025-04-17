@@ -1,7 +1,7 @@
 wmic csproduct get name, vendor, identifyingNumber:
-IdentifyingNumber  Name            Vendor   
+IdentifyingNumber  Name               Vendor           
 
-ZC314484Q          Satellite C855  TOSHIBA  
+2CE4090CDM         HP ProBook 450 G1  Hewlett-Packard  
 
 
 
@@ -10,7 +10,7 @@ ZC314484Q          Satellite C855  TOSHIBA
 wmic path softwarelicensingservice get OA3xOriginalProductKey:
 OA3xOriginalProductKey         
 
-P7N4Q-BGFTD-MB6R2-J7WKQ-GFYQ6  
+N9TFK-CYBBB-H6Y26-XV26F-84YQ3  
 
 
 
