@@ -1,4 +1,96 @@
 Fecha: 16/04/2025
 
-8CG4250BY5         HP ProBook 450 G1  Hewlett-Packard
-TNBG2-FQP9Y-438X6-PQMC9-YDTBP
+wmic bios get Caption, Manufacturer, Version, ReleaseDate:
+Caption         Manufacturer     ReleaseDate                Version     
+
+L74 Ver. 01.50  Hewlett-Packard  20200218000000.000000+000  HPQOEM - 1  
+
+
+
+
+
+wmic baseboard get product, Manufacturer, version, serialnumber, model, SerialNumber, PartNumber:
+Manufacturer     Model  PartNumber  Product  SerialNumber    Version            
+
+Hewlett-Packard                     1942     PDWTC1B2E6G25Y  KBC Version 12.F4  
+
+
+
+
+
+wmic csproduct get name, vendor, identifyingNumber:
+IdentifyingNumber  Name               Vendor           
+
+8CG4250BY5         HP ProBook 450 G1  Hewlett-Packard  
+
+
+
+
+
+wmic cpu get name, numberofcores, numberoflogicalprocessors, maxclockspeed:
+MaxClockSpeed  Name                                      NumberOfCores  NumberOfLogicalProcessors  
+
+2501           Intel(R) Core(TM) i5-4200M CPU @ 2.50GHz  2              4                          
+
+
+
+
+
+wmic path win32_videocontroller get caption, deviceid, driverdate, driverversion:
+Caption                    DeviceID          DriverDate                 DriverVersion  
+
+Intel(R) HD Graphics 4600  VideoController1  20200121000000.000000-000  20.19.15.5126  
+
+
+
+
+
+wmic memorychip get capacity, devicelocator, Speed, Manufacturer, SerialNumber, PartNumber:
+Capacity    DeviceLocator         Manufacturer  PartNumber   SerialNumber  Speed  
+
+8589934592  Top - Slot 1 (top)    Kingston      KVR16LS11/8  880036AF      1600   
+
+8589934592  Top - Slot 2 (under)  Kingston      KVR16LS11/8  880036B1      1600   
+
+
+
+
+
+wmic memphysical get MaxCapacity, MemoryDevices:
+MaxCapacity  MemoryDevices  
+
+16777216     2              
+
+
+
+
+
+wmic diskdrive get Model, Size, MediaType, Status, Manufacturer, SerialNumber:
+Manufacturer                  MediaType              Model              SerialNumber     Size          Status  
+
+(Unidades de disco est ndar)  Fixed hard disk media  HP SSD S650 240GB  HASA24131300168  240054796800  OK      
+
+
+
+
+
+wmic logicaldisk get caption, description, size:
+Caption  Description       Size          
+
+C:       Disco fijo local  110160986112  
+
+D:       Disco fijo local  128542830592  
+
+
+
+
+
+wmic os get caption, csname, osarchitecture, version, buildnumber, installdate:
+BuildNumber  Caption                   CSName           InstallDate                OSArchitecture  Version     
+
+19045        Microsoft Windows 10 Pro  DESKTOP-4N38EFF  20240912015611.000000-300  64 bits         10.0.19045  
+
+
+
+
+
