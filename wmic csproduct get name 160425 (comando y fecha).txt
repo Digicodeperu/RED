@@ -1,0 +1,20 @@
+Fecha: 16/04/2025
+
+wmic csproduct get name, vendor, identifyingNumber:
+IdentifyingNumber  Name               Vendor           
+
+8CG4250BY5         HP ProBook 450 G1  Hewlett-Packard  
+
+
+
+
+
+wmic path softwarelicensingservice get OA3xOriginalProductKey:
+OA3xOriginalProductKey         
+
+TNBG2-FQP9Y-438X6-PQMC9-YDTBP  
+
+
+
+
+
