@@ -1,16 +1,16 @@
 wmic csproduct get name, vendor, identifyingNumber:
-IdentifyingNumber  Name                                Vendor                 
+IdentifyingNumber  Name  Vendor  
 
-LAN0CX04B877423    VivoBook_ASUS Laptop E410MA_E410MA  ASUSTeK COMPUTER INC.  
+MP2GR4DL           83DV  LENOVO  
 
 
 
 
 
 wmic path softwarelicensingservice get OA3xOriginalProductKey:
-OA3xOriginalProductKey         
+OA3xOriginalProductKey  
 
-ND8KP-GCRKC-HVY37-4DM74-CR4TM  
+                        
 
 
 
