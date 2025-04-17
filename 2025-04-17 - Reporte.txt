@@ -1,7 +1,7 @@
 wmic csproduct get name, vendor, identifyingNumber:
-IdentifyingNumber  Name            Vendor   
+IdentifyingNumber  Name                                Vendor                 
 
-ZC314484Q          Satellite C855  TOSHIBA  
+LAN0CX04B877423    VivoBook_ASUS Laptop E410MA_E410MA  ASUSTeK COMPUTER INC.  
 
 
 
@@ -10,7 +10,7 @@ ZC314484Q          Satellite C855  TOSHIBA
 wmic path softwarelicensingservice get OA3xOriginalProductKey:
 OA3xOriginalProductKey         
 
-P7N4Q-BGFTD-MB6R2-J7WKQ-GFYQ6  
+ND8KP-GCRKC-HVY37-4DM74-CR4TM  
 
 
 
