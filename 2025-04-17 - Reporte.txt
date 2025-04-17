@@ -1,7 +1,7 @@
 wmic csproduct get name, vendor, identifyingNumber:
-IdentifyingNumber  Name  Vendor  
+IdentifyingNumber  Name            Vendor   
 
-PF14AJV5           81LW  LENOVO  
+ZC314484Q          Satellite C855  TOSHIBA  
 
 
 
@@ -10,7 +10,7 @@ PF14AJV5           81LW  LENOVO
 wmic path softwarelicensingservice get OA3xOriginalProductKey:
 OA3xOriginalProductKey         
 
-HVNBV-3JQ7H-RRQTC-CT9Q8-CPQFC  
+P7N4Q-BGFTD-MB6R2-J7WKQ-GFYQ6  
 
 
 
