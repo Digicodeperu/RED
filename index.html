@@ -51,7 +51,7 @@
 <body><div style="text-align:center; margin-top: 10px; font-size: 14px;">Visitante N° 25212</div>
   
 <h1>ServiComp Online </h1>
-<p style="text-align: center; color: #d32f2f; font-weight: 600; margin-top: -10px; margin-bottom: 12px;">
+<p style="text-align: center; color: #d32f2f; font-weight: 600; margin-top: -10px; margin-bottom: 20px;">
   Cotización válida por 48 horas — precios y stock sujetos a modificación sin previo aviso.
 </p>
 
@@ -86,24 +86,14 @@
       return XLSX.utils.sheet_to_json(sheet);
     }
 
-    function generarLinkImagen(codigo) {
-  const cod = codigo.toLowerCase();
-  const sub1 = cod.substring(0, 2);
-  let sub2 = cod.substring(2, 4);
-
-  if (cod.includes("wd")) {
-    sub2 = "dw";  // Excepción para Western Digital
-  }
-
-  return `https://imagenes.deltron.com.pe/images/productos//items/large/${sub1}/${sub2}/${cod}.jpg`;
-}
-
-function crearFila(p) {
+    function crearFila(p) {
   const tr = document.createElement("tr");
   const precio = Math.round(Number(p["PRECIO EN SOLES"] || 0));
   const linkImg = generarLinkImagen(p["CODIGO"]);
+  const id = p["CODIGO"];
+
   tr.innerHTML = `
-    <td>${p["MINI CODIGO"]}</td>
+    <td><a href="javascript:void(0)" onclick="mostrarFichaTecnica('${id}')">${p["MINI CODIGO"]}</a></td>
     <td>${p["DESCRIPCION"]}</td>
     <td>${p["DETALLES"]}</td>
     <td>${p["STOCK"]}</td>
@@ -131,7 +121,7 @@ function crearFila(p) {
   </script>
 
 <div id="login" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:9999;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:Arial,sans-serif;">
-  <h2>Ingrese su clave de Distribuidor:</h2>
+  <h2>Acceso restringido</h2>
   <input id="claveInput" placeholder="Ingrese clave" style="padding:10px;font-size:16px;border:1px solid #ccc;border-radius:4px;">
   <button onclick="verificarClave()" style="margin-top:10px;padding:10px 20px;font-size:16px;">Entrar</button>
   <p id="errorClave" style="color:red;margin-top:10px;"></p>
@@ -158,39 +148,12 @@ function crearFila(p) {
 
 <script>
   const curiosidades = [
-    [
-  { texto: "La IA generativa transformó el trabajo de oficina en 2024.", autor: "McKinsey Report" },
-  { texto: "ChatGPT-5 fue lanzado en 2025 con mejoras en razonamiento complejo.", autor: "OpenAI" },
-  { texto: "Apple presentó las nuevas Mac con chip M4 en 2025.", autor: "Apple" },
-  { texto: "Google lanzó Gemini 2, su modelo multimodal, en 2025.", autor: "Google DeepMind" },
-  { texto: "La Unión Europea aprobó la Ley de Inteligencia Artificial en 2024.", autor: "Parlamento Europeo" },
-  { texto: "Meta lanzó las gafas Quest 4 con realidad mixta avanzada.", autor: "Meta" },
-  { texto: "Microsoft integró Copilot en Windows y Office 365.", autor: "Microsoft" },
-  { texto: "Tesla presentó Optimus v2, su robot humanoide autónomo.", autor: "Tesla" },
-  { texto: "El 60% de las empresas de Latinoamérica usan IA en sus procesos.", autor: "IDC LATAM" },
-  { texto: "Spotify integró un DJ virtual con IA en su app global.", autor: "Spotify" },
-  { texto: "Zoom añadió traducción automática en tiempo real en 2025.", autor: "Zoom AI Suite" },
-  { texto: "YouTube comenzó a usar IA para generar resúmenes automáticos.", autor: "YouTube" },
-  { texto: "Samsung presentó su pantalla enrollable Flex Hybrid en CES 2025.", autor: "Samsung" },
-  { texto: "La computación cuántica superó los 100 qubits estables.", autor: "IBM Research" },
-  { texto: "NVIDIA se convirtió en la empresa más valiosa del mundo en 2025.", autor: "Forbes" },
-  { texto: "OpenAI lanzó GPTs personalizables para usuarios sin código.", autor: "OpenAI" },
-  { texto: "El 50% de los hogares inteligentes usan sensores de movimiento conectados.", autor: "SmartHome 2025" },
-  { texto: "Amazon abrió su primer almacén 100% automatizado en 2024.", autor: "Amazon Robotics" },
-  { texto: "Apple Vision Pro se lanzó oficialmente en 2024 con realidad extendida.", autor: "Apple" },
-  { texto: "La realidad aumentada llegó a las aulas de forma masiva.", autor: "EdTech 2024" },
-  { texto: "Android 15 trajo nuevas funciones de privacidad impulsadas por IA.", autor: "Google" },
-  { texto: "El 28% de los autos vendidos en 2025 fueron eléctricos.", autor: "Bloomberg EV Outlook" },
-  { texto: "WhatsApp agregó edición de mensajes por tiempo limitado.", autor: "Meta" },
-  { texto: "GitHub Copilot se consolidó como herramienta clave para programadores.", autor: "GitHub" },
-  { texto: "TikTok superó los 2 mil millones de usuarios activos.", autor: "Statista" },
-  { texto: "Las herramientas no-code se dispararon en popularidad en 2024.", autor: "ProductHunt Trends" },
-  { texto: "El uso de blockchain se expandió a logística y salud.", autor: "TechCrunch 2025" },
-  { texto: "Se popularizó la creación de música con inteligencia artificial.", autor: "MusicTech" },
-  { texto: "Microsoft presentó Phi-3, su modelo pequeño de lenguaje con gran rendimiento.", autor: "Microsoft Research" },
-  { texto: "La ONU advirtió sobre el uso ético de la IA sin regulación global.", autor: "ONU Tecnología" }
-    ]
-    ];
+    { texto: "La primera programadora de la historia fue Ada Lovelace en 1843.", autor: "Ada Lovelace" },
+    { texto: "El primer virus informático fue creado en 1986 y se llamaba Brain.", autor: "Basit & Amjad Farooq Alvi" },
+    { texto: "La contraseña más usada del mundo sigue siendo 123456.", autor: "NordPass Study" },
+    { texto: "El primer mouse fue construido en madera en 1964.", autor: "Douglas Engelbart" },
+    { texto: "El lenguaje Python fue nombrado por el grupo de comedia Monty Python.", autor: "Guido van Rossum" }
+  ];
 
   function mostrarCuriosidad() {
     const item = curiosidades[Math.floor(Math.random() * curiosidades.length)];
@@ -198,6 +161,80 @@ function crearFila(p) {
   }
 
   window.onload = mostrarCuriosidad;
+</script>
+
+
+<div id="modal" style="display:none; position:fixed; top:10%; left:50%; transform:translateX(-50%);
+  background:white; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.2); max-width:600px; width:90%;
+  z-index:1000; padding:20px; font-size:15px;">
+  <button onclick="cerrarModal()" style="float:right; background:#d32f2f; color:white; border:none; padding:6px 12px; border-radius:4px;">Cerrar</button>
+  <div id="contenido-modal"></div>
+</div>
+
+<div id="fondo-modal" onclick="cerrarModal()" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.3); z-index:999;"></div>
+
+<script>
+function cerrarModal() {
+  document.getElementById("modal").style.display = "none";
+  document.getElementById("fondo-modal").style.display = "none";
+  document.getElementById("contenido-modal").innerHTML = "";
+}
+
+async function mostrarFichaTecnica(codigo) {
+  const contenido = document.getElementById("contenido-modal");
+  contenido.innerHTML = "<em>Cargando características...</em>";
+  document.getElementById("modal").style.display = "block";
+  document.getElementById("fondo-modal").style.display = "block";
+
+  const url = `https://www.deltron.com.pe/modulos/productos/items/postsql.php?item_number=${codigo}`;
+  try {
+    const res = await fetch(url);
+    const html = await res.text();
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    const tabla = doc.querySelector("table.detalleproducto");
+    contenido.innerHTML = tabla ? tabla.outerHTML : "<em>Características no disponibles</em>";
+  } catch (e) {
+    contenido.innerHTML = "<em>Error al cargar la ficha técnica.</em>";
+  }
+}
+</script>
+
+
+<div id="modal" style="display:none; position:fixed; top:10%; left:50%; transform:translateX(-50%);
+  background:white; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.2); max-width:600px; width:90%;
+  z-index:1000; padding:20px; font-size:15px;">
+  <button onclick="cerrarModal()" style="float:right; background:#d32f2f; color:white; border:none; padding:6px 12px; border-radius:4px;">Cerrar</button>
+  <div id="contenido-modal"></div>
+</div>
+
+<div id="fondo-modal" onclick="cerrarModal()" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.3); z-index:999;"></div>
+
+<script>
+function cerrarModal() {
+  document.getElementById("modal").style.display = "none";
+  document.getElementById("fondo-modal").style.display = "none";
+  document.getElementById("contenido-modal").innerHTML = "";
+}
+
+async function mostrarFichaTecnica(codigo) {
+  const contenido = document.getElementById("contenido-modal");
+  contenido.innerHTML = "<em>Cargando características...</em>";
+  document.getElementById("modal").style.display = "block";
+  document.getElementById("fondo-modal").style.display = "block";
+
+  const url = `https://www.deltron.com.pe/modulos/productos/items/postsql.php?item_number=${codigo}`;
+  try {
+    const res = await fetch(url);
+    const html = await res.text();
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    const tabla = doc.querySelector("table.detalleproducto");
+    contenido.innerHTML = tabla ? tabla.outerHTML : "<em>Características no disponibles</em>";
+  } catch (e) {
+    contenido.innerHTML = "<em>Error al cargar la ficha técnica.</em>";
+  }
+}
 </script>
 
 </body>
