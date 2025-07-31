@@ -3,7 +3,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Lista de Productos</title>
+  <title>Productos Deltron</title>
   <style>
     body { font-family: Arial, sans-serif; padding: 20px; }
     table { width: 100%; border-collapse: collapse; margin-top: 20px; }
@@ -18,8 +18,9 @@
       <tr>
         <th>MiniCódigo</th>
         <th>Descripción</th>
-        <th>Precio $</th>
-        <th>Marca</th>
+        <th>Detalles</th>
+        <th>Stock</th>
+        <th>Precio (S/)</th>
         <th>Foto</th>
       </tr>
     </thead>
@@ -36,13 +37,14 @@
 
       rows.forEach(row => {
         const cols = row.split(",");
-        if (cols.length < 6) return;
+        if (cols.length < 8) return;
 
         const codigo = cols[0].trim();
         const descripcion = cols[1].trim();
-        const precio = cols[3].trim();
-        const marca = cols[4].trim();
+        const stock = cols[2].trim();
+        const precio_soles = cols[7].trim();
         const minicod = cols[5].trim();
+        const detalles = cols[6].trim();
 
         const img_url = "https://imagenes.deltron.com.pe/images/productos//items/large/nb/" +
                         codigo.substring(4,6).toLowerCase() + "/" + codigo.toLowerCase() + ".jpg";
@@ -51,8 +53,9 @@
         tr.innerHTML = `
           <td>${minicod}</td>
           <td>${descripcion}</td>
-          <td>$${precio}</td>
-          <td>${marca}</td>
+          <td>${detalles}</td>
+          <td>${stock}</td>
+          <td>S/ ${precio_soles}</td>
           <td><a href="${img_url}" target="_blank">Ver FOTO</a></td>
         `;
         tabla.appendChild(tr);
