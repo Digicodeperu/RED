@@ -32,19 +32,29 @@
       const url = 'https://raw.githubusercontent.com/Digicodeperu/RED/main/productos_limpio.csv';
       const response = await fetch(url);
       const data = await response.text();
-      const rows = data.split("\n").slice(1);
+      const rows = data.trim().split("\n");
       const tabla = document.querySelector("#tabla tbody");
 
-      rows.forEach(row => {
+      const headers = rows[0].split(",");
+      const idx = {
+        codigo: headers.indexOf("CODIGO"),
+        descripcion: headers.indexOf("DESCRIPCION"),
+        stock: headers.indexOf("STOCK"),
+        precio_soles: headers.indexOf("PRECIO EN SOLES"),
+        minicod: headers.indexOf("MINI CODIGO"),
+        detalles: headers.indexOf("DETALLES")
+      };
+
+      rows.slice(1).forEach(row => {
         const cols = row.split(",");
         if (cols.length < 8) return;
 
-        const codigo = cols[0].trim();
-        const descripcion = cols[1].trim();
-        const stock = cols[2].trim();
-        const precio_soles = cols[7].trim();
-        const minicod = cols[5].trim();
-        const detalles = cols[6].trim();
+        const codigo = cols[idx.codigo].trim();
+        const descripcion = cols[idx.descripcion].trim();
+        const stock = cols[idx.stock].trim();
+        const precio_soles = cols[idx.precio_soles].trim();
+        const minicod = cols[idx.minicod].trim();
+        const detalles = cols[idx.detalles].trim();
 
         const img_url = "https://www.deltron.com.pe/modulos/productos/items/image_ext.php?item=" + codigo;
 
