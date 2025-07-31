@@ -1,281 +1,157 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ServiComp – Cotización Personalizada</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <title>ServiComp Online</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
-      margin: 0;
       font-family: 'Inter', sans-serif;
-      background-color: #f3f4f6;
-      color: #1f2937;
-    }
-    #login {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(to right, #e5e7eb, #f9fafb);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    }
-    #login-box {
-      background: white;
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-      max-width: 400px;
-      text-align: center;
-    }
-    #login h2 {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-bottom: 20px;
-      color: #111827;
-    }
-    #claveInput {
-      padding: 12px;
-      width: 100%;
-      font-size: 16px;
-      border: 1px solid #d1d5db;
-      border-radius: 6px;
-    }
-    #entrarBtn {
-      margin-top: 16px;
-      padding: 12px;
-      width: 100%;
-      font-size: 16px;
-      background-color: #2563eb;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    #entrarBtn:hover {
-      background-color: #1d4ed8;
-    }
-    #errorClave {
-      color: red;
-      margin-top: 12px;
-      font-size: 14px;
-    }
-    header {
-      text-align: center;
-      padding: 30px 20px 10px;
-      background-color: #ffffff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-    header h1 {
+      background: #f9fafb;
       margin: 0;
-      font-size: 1.75rem;
-      font-weight: 700;
+      padding: 20px;
+      color: #333;
     }
-    header h2 {
-      margin: 8px 0 0;
-      font-size: 1.1rem;
-      font-weight: 400;
-      color: #6b7280;
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
     }
-    .info-bar {
-      display: flex;
-      justify-content: center;
-      gap: 24px;
-      margin: 12px 0;
-      font-size: 14px;
-      color: #374151;
-    }
-    footer {
-      font-size: 14px;
-      color: #6b7280;
-      text-align: left;
-      padding: 30px 20px;
-      background-color: #f9fafb;
-      margin-top: 60px;
-      max-width: 800px;
-    }
-    .bold { font-weight: 600; }
-
-    /* Modal */
-    #modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
+    table {
+      border-collapse: collapse;
       width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.75);
-      justify-content: center;
-      align-items: center;
-      z-index: 10000;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      overflow: hidden;
     }
-    #modal img {
-      max-width: 90%;
-      max-height: 90%;
-      border-radius: 10px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    thead {
+      background-color: #2d6cdf;
+      color: white;
+    }
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+    }
+    tbody tr:nth-child(even) {
+      background-color: #f0f4fa;
+    }
+    a {
+      color: #1a73e8;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .loading {
+      text-align: center;
+      font-size: 1.2em;
+      margin-top: 40px;
     }
   </style>
 </head>
 <body>
+ 
 
-  <div id="login">
-    <div id="login-box">
-      <h2>Ingrese clave de distribuidor</h2>
-      <input id="claveInput" placeholder="Ingrese clave" type="password">
-      <button id="entrarBtn" onclick="verificarClave()">Entrar</button>
-      <p id="errorClave"></p>
-    </div>
-  </div>
-
-  <header>
-    <h1>ServiComp – Cotización Personalizada</h1>
-    <h2>"Equipos confiables, soluciones inteligentes”</h2>
-    <div class="info-bar">
-      <span>💼 Cliente: <span class="bold" id="clienteNombre">...</span></span>
-      <span>💱 Dólar: <span class="bold" id="tipoCambio">S/ ...</span></span>
-      <span>👁️ Visitante N.º <span class="bold" id="visitanteID">...</span></span>
-    </div>
-  </header>
-
-  <!-- Modal para ver imagen -->
-  <div id="modal" onclick="cerrarModal()">
-    <img id="modal-img" src="" alt="Imagen del producto">
-  </div>
-
-  <div class="loading" style="text-align:center;font-size:1.2em;margin-top:40px;">Cargando productos...</div>
-  <table style="display: none; width: 100%; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; border-collapse: collapse;">
-    <thead style="background-color: #2d6cdf; color: white;">
+  <div class="loading">Cargando productos...</div>
+  <table style="display: none;">
+    <thead>
       <tr>
-        <th style="padding:12px 15px;text-align:left;">Código</th>
-        <th style="padding:12px 15px;text-align:left;">Descripción</th>
-        <th style="padding:12px 15px;text-align:left;">Detalles</th>
-        <th style="padding:12px 15px;text-align:left;">Stock</th>
-        <th style="padding:12px 15px;text-align:left;">Precio</th>
-        <th style="padding:12px 15px;text-align:left;">Foto</th>
+        <th>Código</th>
+        <th>Descripción</th>
+        <th>Detalles</th>
+        <th>Stock</th>
+        <th>Precio</th>
+        <th>Foto</th>
       </tr>
     </thead>
     <tbody id="tabla-productos"></tbody>
   </table>
 
-📅 Vigencia: 48 horas a partir de la fecha de emisión.<br>
-⚠️ Los precios y el stock pueden variar sin previo aviso.<br>
-🚚 No incluye flete ni costos de traslado.<br>
-🛡️ Garantía brindada directamente por el fabricante.$3
-  </footer>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script>
-    async function verificarClave() {
-      const claveIngresada = document.getElementById("claveInput").value.trim();
-      const respuesta = await fetch('https://raw.githubusercontent.com/Digicodeperu/RED/main/filtro.txt');
-      const texto = await respuesta.text();
-      const claves = texto.trim().split('\n');
-      const claveCorrecta = claves[0].trim();
-      const clienteNombre = await fetch('https://raw.githubusercontent.com/Digicodeperu/RED/main/coti.txt')
-        .then(res => res.text())
-        .then(txt => txt.trim().split('\n')[0] || 'Desconocido');
-      if (claveIngresada === claveCorrecta) {
-        document.getElementById("login").style.display = "none";
-        document.getElementById("clienteNombre").textContent = clienteNombre;
-      } else {
-        document.getElementById("errorClave").innerText = "Clave incorrecta.";
-      }
+    async function cargarFiltro() {
+      const res = await fetch("https://raw.githubusercontent.com/Digicodeperu/RED/main/filtro.txt");
+      const txt = await res.text();
+      return txt.split("\n").map(x => x.trim()).filter(x => x.length > 0);
     }
 
-    async function cargarTipoCambio() {
-      try {
-        const res = await fetch('https://api.apis.net.pe/v1/tipo-cambio-sunat');
-        const data = await res.json();
-        document.getElementById("tipoCambio").textContent = `S/ ${data.venta}`;
-      } catch (error) {
-        document.getElementById("tipoCambio").textContent = "S/ 3.59";
-      }
+    async function cargarExcel() {
+      const res = await fetch("https://raw.githubusercontent.com/Digicodeperu/RED/main/productos.xlsx");
+      const data = await res.arrayBuffer();
+      const workbook = XLSX.read(data, { type: "array" });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      return XLSX.utils.sheet_to_json(sheet);
     }
 
-    function generarVisitanteID() {
-      const fecha = new Date();
-      const year = fecha.getFullYear().toString().slice(-2);
-      const start = new Date(fecha.getFullYear(), 0, 0);
-      const diff = fecha - start + (start.getTimezoneOffset() - fecha.getTimezoneOffset()) * 60000;
-      const dayOfYear = Math.floor(diff / 86400000);
-      const visitante = parseInt(`${year}${dayOfYear.toString().padStart(3, '0')}`);
-      document.getElementById("visitanteID").textContent = visitante;
+    function generarLinkImagen(codigo) {
+  const cod = codigo.toLowerCase();
+  const sub1 = cod.substring(0, 2);
+  let sub2 = cod.substring(2, 4);
+
+  if (cod.includes("wd")) {
+    sub2 = "dw";  // Excepción para Western Digital
+  }
+
+  return `https://imagenes.deltron.com.pe/images/productos//items/large/${sub1}/${sub2}/${cod}.jpg`;
+}
+
+function crearFila(p) {
+  const tr = document.createElement("tr");
+  const precio = Math.round(Number(p["PRECIO EN SOLES"] || 0));
+  const linkImg = generarLinkImagen(p["CODIGO"]);
+  tr.innerHTML = `
+    <td>${p["MINI CODIGO"]}</td>
+    <td>${p["DESCRIPCION"]}</td>
+    <td>${p["DETALLES"]}</td>
+    <td>${p["STOCK"]}</td>
+    <td>S/ ${precio}</td>
+    <td><a href="${linkImg}" target="_blank">Ver FOTO</a></td>
+  `;
+  return tr;
+}
+
+    async function mostrarProductos() {
+      const [filtro, productos] = await Promise.all([cargarFiltro(), cargarExcel()]);
+      const cuerpo = document.getElementById("tabla-productos");
+      const tabla = document.querySelector("table");
+      const loading = document.querySelector(".loading");
+
+      productos
+        .filter(p => filtro.includes(String(p["MINI CODIGO"]).trim()))
+        .forEach(p => cuerpo.appendChild(crearFila(p)));
+
+      tabla.style.display = "table";
+      loading.style.display = "none";
     }
 
-    function abrirModal(src) {
-      document.getElementById("modal-img").src = src;
-      document.getElementById("modal").style.display = "flex";
-    }
-
-    function cerrarModal() {
-      document.getElementById("modal").style.display = "none";
-      document.getElementById("modal-img").src = "";
-    }
-
-    cargarTipoCambio();
-    generarVisitanteID();
+    mostrarProductos();
   </script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<div id="login" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:9999;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:Arial,sans-serif;">
+  <h2>Acceso restringido</h2>
+  <input id="claveInput" placeholder="Ingrese clave" style="padding:10px;font-size:16px;border:1px solid #ccc;border-radius:4px;">
+  <button onclick="verificarClave()" style="margin-top:10px;padding:10px 20px;font-size:16px;">Entrar</button>
+  <p id="errorClave" style="color:red;margin-top:10px;"></p>
+</div>
 <script>
-  async function cargarFiltro() {
-    const res = await fetch("https://raw.githubusercontent.com/Digicodeperu/RED/main/filtro.txt");
-    const txt = await res.text();
-    return txt.split("
-").map(x => x.trim()).filter(x => x.length > 0);
+  async function verificarClave() {
+    const claveIngresada = document.getElementById("claveInput").value.trim();
+    const respuesta = await fetch('https://raw.githubusercontent.com/Digicodeperu/RED/main/filtro.txt');
+    const texto = await respuesta.text();
+    const claves = texto.trim().split('\n');
+    const claveCorrecta = claves[0].trim();
+    if (claveIngresada === claveCorrecta) {
+      document.getElementById("login").style.display = "none";
+    } else {
+      document.getElementById("errorClave").innerText = "Clave incorrecta.";
+    }
   }
-
-  async function cargarExcel() {
-    const res = await fetch("https://raw.githubusercontent.com/Digicodeperu/RED/main/productos.xlsx");
-    const data = await res.arrayBuffer();
-    const workbook = XLSX.read(data, { type: "array" });
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    return XLSX.utils.sheet_to_json(sheet);
-  }
-
-  function generarLinkImagen(codigo) {
-    const cod = codigo.toLowerCase();
-    const sub1 = cod.substring(0, 2);
-    let sub2 = cod.substring(2, 4);
-    if (cod.includes("wd")) sub2 = "dw";
-    return `https://imagenes.deltron.com.pe/images/productos//items/large/${sub1}/${sub2}/${cod}.jpg`;
-  }
-
-  function crearFila(p) {
-    const tr = document.createElement("tr");
-    const precio = Math.round(Number(p["PRECIO EN SOLES"] || 0)).toLocaleString("es-PE");
-    const linkImg = generarLinkImagen(p["CODIGO"]);
-    tr.innerHTML = `
-      <td style="padding:12px 15px;">${p["MINI CODIGO"]}</td>
-      <td style="padding:12px 15px;">${p["DESCRIPCION"]}</td>
-      <td style="padding:12px 15px;">${p["DETALLES"]}</td>
-      <td style="padding:12px 15px;">${p["STOCK"]}</td>
-      <td style="padding:12px 15px;">S/ ${precio}</td>
-      <td style="padding:12px 15px;"><a href="javascript:void(0);" onclick="abrirModal('${linkImg}')">Ver FOTO</a></td>
-    `;
-    return tr;
-  }
-
-  async function mostrarProductos() {
-    const [filtro, productos] = await Promise.all([cargarFiltro(), cargarExcel()]);
-    const cuerpo = document.getElementById("tabla-productos");
-    const tabla = document.querySelector("table");
-    const loading = document.querySelector(".loading");
-
-    productos
-      .filter(p => filtro.includes(String(p["MINI CODIGO"]).trim()))
-      .forEach(p => cuerpo.appendChild(crearFila(p)));
-
-    tabla.style.display = "table";
-    loading.style.display = "none";
-  }
-
-  mostrarProductos();
 </script>
+
+
+
+<div id="sabiasque" style="text-align: center; color: #555; font-style: italic; margin-top: 14px; font-size: 14px;">
+</div>
+
+
 </body>
 </html>
