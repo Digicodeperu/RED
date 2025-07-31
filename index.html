@@ -122,62 +122,51 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js">
   </script>
   <script>
-   async function cargarFiltro() {
-      const res = await fetch("https://raw.githubusercontent.com/Digicodeperu/RED/main/filtro.txt");
-      const txt = await res.text();
-      return txt.split("\n").map(x => x.trim()).filter(x => x.length > 0);
-    }
+   async function mostrarProductos() {
+  const [filtro, productos, cotiRaw] = await Promise.all([
+    cargarFiltro(),
+    cargarExcel(),
+    fetch("https://raw.githubusercontent.com/Digicodeperu/RED/main/coti.txt").then(r => r.text())
+  ]);
 
-    async function cargarExcel() {
-      const res = await fetch("https://raw.githubusercontent.com/Digicodeperu/RED/main/productos.xlsx");
-      const data = await res.arrayBuffer();
-      const workbook = XLSX.read(data, { type: "array" });
-      const sheet = workbook.Sheets[workbook.SheetNames[0]];
-      return XLSX.utils.sheet_to_json(sheet);
-    }
+  const lineas = cotiRaw.split('\n');
+  const margenLinea = lineas.find(l => l.toLowerCase().startsWith("margen"));
+  const envioLinea = lineas.find(l => l.toLowerCase().startsWith("envio"));
+  const margen = margenLinea ? parseFloat(margenLinea.split(":")[1].trim()) : 1;
+  const flete = envioLinea ? parseFloat(envioLinea.split(":")[1].trim()) : 0;
 
-    function generarLinkImagen(codigo) {
-  const cod = codigo.toLowerCase();
-  const sub1 = cod.substring(0, 2);
-  let sub2 = cod.substring(2, 4);
+  const cuerpo = document.getElementById("tabla-productos");
+  const tabla = document.querySelector("table");
+  const loading = document.querySelector(".loading");
 
-  if (cod.includes("wd")) {
-    sub2 = "dw";  // Excepción para Western Digital
-  }
+  productos
+    .filter(p => filtro.includes(String(p["MINI CODIGO"]).trim()))
+    .forEach(p => {
+      const tr = document.createElement("tr");
+      const precioUSD = Number(p["PRECIO $"] || 0);
+      const precioFinal = Math.round(precioUSD * margen + flete);
+      const precioFormateado = "S/. " + precioFinal.toLocaleString("es-PE");
 
-  return `https://imagenes.deltron.com.pe/images/productos//items/large/${sub1}/${sub2}/${cod}.jpg`;
+      const cod = p["CODIGO"].toLowerCase();
+      const sub1 = cod.substring(0, 2);
+      let sub2 = cod.substring(2, 4);
+      if (cod.includes("wd")) sub2 = "dw";
+      const linkImg = `https://imagenes.deltron.com.pe/images/productos//items/large/${sub1}/${sub2}/${cod}.jpg`;
+
+      tr.innerHTML = `
+        <td>${p["MINI CODIGO"]}</td>
+        <td>${p["DESCRIPCION"]}</td>
+        <td>${p["DETALLES"]}</td>
+        <td>${p["STOCK"]}</td>
+        <td>${precioFormateado}</td>
+        <td><a href="${linkImg}" target="_blank">Ver FOTO</a></td>
+      `;
+      cuerpo.appendChild(tr);
+    });
+
+  tabla.style.display = "table";
+  loading.style.display = "none";
 }
-
-function crearFila(p) {
-  const tr = document.createElement("tr");
-  const precio = Math.round(Number(p["PRECIO EN SOLES"] || 0));
-  const linkImg = generarLinkImagen(p["CODIGO"]);
-  tr.innerHTML = `
-    <td>${p["MINI CODIGO"]}</td>
-    <td>${p["DESCRIPCION"]}</td>
-    <td>${p["DETALLES"]}</td>
-    <td>${p["STOCK"]}</td>
-    <td>S/ ${precio}</td>
-    <td><a href="${linkImg}" target="_blank">Ver FOTO</a></td>
-  `;
-  return tr;
-}
-
-    async function mostrarProductos() {
-      const [filtro, productos] = await Promise.all([cargarFiltro(), cargarExcel()]);
-      const cuerpo = document.getElementById("tabla-productos");
-      const tabla = document.querySelector("table");
-      const loading = document.querySelector(".loading");
-
-      productos
-        .filter(p => filtro.includes(String(p["MINI CODIGO"]).trim()))
-        .forEach(p => cuerpo.appendChild(crearFila(p)));
-
-      tabla.style.display = "table";
-      loading.style.display = "none";
-    }
-
-    mostrarProductos();
   </script>
   <div id="login" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:9999;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:Arial,sans-serif;">
    <h2>
