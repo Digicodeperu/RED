@@ -29,7 +29,7 @@
 
   <script>
     async function cargarProductos() {
-      const url = 'https://raw.githubusercontent.com/Digicodeperu/RED/main/productos.csv';
+      const url = 'https://raw.githubusercontent.com/Digicodeperu/RED/main/productos_limpio.csv';
       const response = await fetch(url);
       const data = await response.text();
       const rows = data.split("\n").slice(1);
@@ -46,8 +46,7 @@
         const minicod = cols[5].trim();
         const detalles = cols[6].trim();
 
-        const img_url = "https://imagenes.deltron.com.pe/images/productos//items/large/nb/" +
-                        codigo.substring(4,6).toLowerCase() + "/" + codigo.toLowerCase() + ".jpg";
+        const img_url = "https://www.deltron.com.pe/modulos/productos/items/image_ext.php?item=" + codigo;
 
         const tr = document.createElement("tr");
         tr.innerHTML = `
