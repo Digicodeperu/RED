@@ -1,12 +1,13 @@
-
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>ServiComp Online</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+ <head>
+  <meta charset="utf-8"/>
+  <title>
+   ServiComp – Cotización Personalizada
+  </title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
   <style>
-    body {
+   body {
       font-family: 'Inter', sans-serif;
       background: #f9fafb;
       margin: 0;
@@ -47,32 +48,87 @@
       margin-top: 40px;
     }
   </style>
-</head>
-<body><div style="text-align:center; margin-top: 10px; font-size: 14px;">Visitante N° 25212</div>
-  
-<h1>ServiComp Online </h1>
-<p style="text-align: center; color: #d32f2f; font-weight: 600; margin-top: -10px; margin-bottom: 20px;">
-  Cotización válida por 48 horas — precios y stock sujetos a modificación sin previo aviso.
-</p>
-
-  <div class="loading">Cargando productos...</div>
+ </head>
+ <body>
+  <div style="text-align:center; margin-top: 10px; font-size: 14px;">
+   Visitante N° 25212
+  </div>
+  <h1>
+   ServiComp – Cotización Personalizada
+  </h1>
+  <div id="info-cliente" style="margin-top: 10px; font-size: 15px; font-weight: 500; color: #1a237e; text-align: center;">
+   <span id="cliente-texto">
+    💼 Cliente:
+    <strong>
+     ...
+    </strong>
+   </span>
+   <span id="dolar-texto">
+    💱 Dólar:
+    <strong>
+     ...
+    </strong>
+   </span>
+   <span id="visitante-texto">
+    👁️ Visitante N.º
+    <strong>
+     ...
+    </strong>
+   </span>
+  </div>
+  <p style="text-align: center; color: #d32f2f; font-weight: 600; margin-top: -10px; margin-bottom: 20px;">
+   Cotización válida por 48 horas — precios y stock sujetos a modificación sin previo aviso.
+  </p>
+  <div class="loading">
+   Cargando productos...
+  </div>
   <table style="display: none;">
-    <thead>
-      <tr>
-        <th>Código</th>
-        <th>Descripción</th>
-        <th>Detalles</th>
-        <th>Stock</th>
-        <th>Precio</th>
-        <th>Foto</th>
-      </tr>
-    </thead>
-    <tbody id="tabla-productos"></tbody>
+   <thead>
+    <tr>
+     <th>
+      Código
+     </th>
+     <th>
+      Descripción
+     </th>
+     <th>
+      Detalles
+     </th>
+     <th>
+      Stock
+     </th>
+     <th>
+      Precio
+     </th>
+     <th>
+      Foto
+     </th>
+    </tr>
+   </thead>
+   <tbody id="tabla-productos">
+   </tbody>
   </table>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <div style="margin-top: 40px; font-size: 14px; color: #444; text-align: center; max-width: 700px; margin-left: auto; margin-right: auto;">
+   <p style="font-weight: bold; color: #d32f2f;">
+    ⚠️ Condiciones de la cotización
+   </p>
+   <p>
+    Vigencia: 48 horas a partir de la fecha de emisión.
+   </p>
+   <p>
+    Los precios y el stock pueden variar sin previo aviso.
+   </p>
+   <p>
+    No incluye flete ni costos de traslado.
+   </p>
+   <p>
+    Garantía brindada directamente por el fabricante.
+   </p>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js">
+  </script>
   <script>
-    async function cargarFiltro() {
+   async function cargarFiltro() {
       const res = await fetch("https://raw.githubusercontent.com/Digicodeperu/RED/main/filtro.txt");
       const txt = await res.text();
       return txt.split("\n").map(x => x.trim()).filter(x => x.length > 0);
@@ -86,14 +142,24 @@
       return XLSX.utils.sheet_to_json(sheet);
     }
 
-    function crearFila(p) {
+    function generarLinkImagen(codigo) {
+  const cod = codigo.toLowerCase();
+  const sub1 = cod.substring(0, 2);
+  let sub2 = cod.substring(2, 4);
+
+  if (cod.includes("wd")) {
+    sub2 = "dw";  // Excepción para Western Digital
+  }
+
+  return `https://imagenes.deltron.com.pe/images/productos//items/large/${sub1}/${sub2}/${cod}.jpg`;
+}
+
+function crearFila(p) {
   const tr = document.createElement("tr");
   const precio = Math.round(Number(p["PRECIO EN SOLES"] || 0));
   const linkImg = generarLinkImagen(p["CODIGO"]);
-  const id = p["CODIGO"];
-
   tr.innerHTML = `
-    <td><a href="javascript:void(0)" onclick="mostrarFichaTecnica('${id}')">${p["MINI CODIGO"]}</a></td>
+    <td>${p["MINI CODIGO"]}</td>
     <td>${p["DESCRIPCION"]}</td>
     <td>${p["DETALLES"]}</td>
     <td>${p["STOCK"]}</td>
@@ -119,15 +185,19 @@
 
     mostrarProductos();
   </script>
-
-<div id="login" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:9999;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:Arial,sans-serif;">
-  <h2>Acceso restringido</h2>
-  <input id="claveInput" placeholder="Ingrese clave" style="padding:10px;font-size:16px;border:1px solid #ccc;border-radius:4px;">
-  <button onclick="verificarClave()" style="margin-top:10px;padding:10px 20px;font-size:16px;">Entrar</button>
-  <p id="errorClave" style="color:red;margin-top:10px;"></p>
-</div>
-<script>
-  async function verificarClave() {
+  <div id="login" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:9999;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:Arial,sans-serif;">
+   <h2>
+    Acceso restringido
+   </h2>
+   <input id="claveInput" placeholder="Ingrese clave" style="padding:10px;font-size:16px;border:1px solid #ccc;border-radius:4px;"/>
+   <button onclick="verificarClave()" style="margin-top:10px;padding:10px 20px;font-size:16px;">
+    Entrar
+   </button>
+   <p id="errorClave" style="color:red;margin-top:10px;">
+   </p>
+  </div>
+  <script>
+   async function verificarClave() {
     const claveIngresada = document.getElementById("claveInput").value.trim();
     const respuesta = await fetch('https://raw.githubusercontent.com/Digicodeperu/RED/main/filtro.txt');
     const texto = await respuesta.text();
@@ -139,15 +209,9 @@
       document.getElementById("errorClave").innerText = "Clave incorrecta.";
     }
   }
-</script>
-
-
-
-<div id="sabiasque" style="text-align: center; color: #555; font-style: italic; margin-top: 14px; font-size: 14px;">
-</div>
-
-<script>
-  const curiosidades = [
+  </script>
+  <script>
+   const curiosidades = [
     { texto: "La primera programadora de la historia fue Ada Lovelace en 1843.", autor: "Ada Lovelace" },
     { texto: "El primer virus informático fue creado en 1986 y se llamaba Brain.", autor: "Basit & Amjad Farooq Alvi" },
     { texto: "La contraseña más usada del mundo sigue siendo 123456.", autor: "NordPass Study" },
@@ -161,81 +225,40 @@
   }
 
   window.onload = mostrarCuriosidad;
-</script>
-
-
-<div id="modal" style="display:none; position:fixed; top:10%; left:50%; transform:translateX(-50%);
-  background:white; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.2); max-width:600px; width:90%;
-  z-index:1000; padding:20px; font-size:15px;">
-  <button onclick="cerrarModal()" style="float:right; background:#d32f2f; color:white; border:none; padding:6px 12px; border-radius:4px;">Cerrar</button>
-  <div id="contenido-modal"></div>
-</div>
-
-<div id="fondo-modal" onclick="cerrarModal()" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-  background:rgba(0,0,0,0.3); z-index:999;"></div>
-
-<script>
-function cerrarModal() {
-  document.getElementById("modal").style.display = "none";
-  document.getElementById("fondo-modal").style.display = "none";
-  document.getElementById("contenido-modal").innerHTML = "";
-}
-
-async function mostrarFichaTecnica(codigo) {
-  const contenido = document.getElementById("contenido-modal");
-  contenido.innerHTML = "<em>Cargando características...</em>";
-  document.getElementById("modal").style.display = "block";
-  document.getElementById("fondo-modal").style.display = "block";
-
-  const url = `https://www.deltron.com.pe/modulos/productos/items/postsql.php?item_number=${codigo}`;
+  </script>
+  <script>
+   async function mostrarDatosEncabezado() {
   try {
-    const res = await fetch(url);
-    const html = await res.text();
-    const doc = new DOMParser().parseFromString(html, "text/html");
-    const tabla = doc.querySelector("table.detalleproducto");
-    contenido.innerHTML = tabla ? tabla.outerHTML : "<em>Características no disponibles</em>";
-  } catch (e) {
-    contenido.innerHTML = "<em>Error al cargar la ficha técnica.</em>";
+    // Obtener nombre del cliente desde coti.txt
+    const resCliente = await fetch("https://raw.githubusercontent.com/Digicodeperu/RED/main/coti.txt");
+    const texto = await resCliente.text();
+    const lineas = texto.trim().split('\n');
+    const clienteLinea = lineas.find(l => l.toLowerCase().startsWith("cliente"));
+    const nombreCliente = clienteLinea ? clienteLinea.split(":")[1].trim() : "Desconocido";
+
+    // Obtener tipo de cambio USD→PEN
+    const resDolar = await fetch("https://api.exchangerate.host/latest?base=USD&symbols=PEN");
+    const dataDolar = await resDolar.json();
+    const dolar = dataDolar.rates.PEN.toFixed(2);
+
+    // Calcular número de visitante YYDDD
+    const hoy = new Date();
+    const start = new Date(hoy.getFullYear(), 0, 0);
+    const diff = hoy - start;
+    const day = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const yearShort = hoy.getFullYear().toString().slice(-2);
+    const visitante = yearShort + String(day).padStart(3, '0');
+
+    // Mostrar datos en pantalla
+    document.getElementById("cliente-texto").innerHTML = `💼 Cliente: <strong>${nombreCliente}</strong>`;
+    document.getElementById("dolar-texto").innerHTML = `💱 Dólar: <strong>S/ ${dolar}</strong>`;
+    document.getElementById("visitante-texto").innerHTML = `👁️ Visitante N.º <strong>${visitante}</strong>`;
+  } catch (err) {
+    document.getElementById("info-cliente").innerText = "No se pudo cargar información del encabezado.";
   }
 }
-</script>
 
-
-<div id="modal" style="display:none; position:fixed; top:10%; left:50%; transform:translateX(-50%);
-  background:white; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.2); max-width:600px; width:90%;
-  z-index:1000; padding:20px; font-size:15px;">
-  <button onclick="cerrarModal()" style="float:right; background:#d32f2f; color:white; border:none; padding:6px 12px; border-radius:4px;">Cerrar</button>
-  <div id="contenido-modal"></div>
-</div>
-
-<div id="fondo-modal" onclick="cerrarModal()" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-  background:rgba(0,0,0,0.3); z-index:999;"></div>
-
-<script>
-function cerrarModal() {
-  document.getElementById("modal").style.display = "none";
-  document.getElementById("fondo-modal").style.display = "none";
-  document.getElementById("contenido-modal").innerHTML = "";
-}
-
-async function mostrarFichaTecnica(codigo) {
-  const contenido = document.getElementById("contenido-modal");
-  contenido.innerHTML = "<em>Cargando características...</em>";
-  document.getElementById("modal").style.display = "block";
-  document.getElementById("fondo-modal").style.display = "block";
-
-  const url = `https://www.deltron.com.pe/modulos/productos/items/postsql.php?item_number=${codigo}`;
-  try {
-    const res = await fetch(url);
-    const html = await res.text();
-    const doc = new DOMParser().parseFromString(html, "text/html");
-    const tabla = doc.querySelector("table.detalleproducto");
-    contenido.innerHTML = tabla ? tabla.outerHTML : "<em>Características no disponibles</em>";
-  } catch (e) {
-    contenido.innerHTML = "<em>Error al cargar la ficha técnica.</em>";
-  }
-}
-</script>
-
-</body>
+window.onload = mostrarDatosEncabezado;
+  </script>
+ </body>
 </html>
