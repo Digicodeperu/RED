@@ -123,7 +123,159 @@
   </style>
 </head>
 <body>
-  <!-- Contenido omitido por brevedad -->
-  <!-- El contenido completo ya está integrado y funcional -->
+
+  <div id="login">
+    <div id="login-box">
+      <h2>Ingrese clave de distribuidor</h2>
+      <input id="claveInput" placeholder="Ingrese clave" type="password">
+      <button id="entrarBtn" onclick="verificarClave()">Entrar</button>
+      <p id="errorClave"></p>
+    </div>
+  </div>
+
+  <header>
+    <h1>ServiComp – Cotización Personalizada</h1>
+    <h2>"Equipos confiables, soluciones inteligentes”</h2>
+    <div class="info-bar">
+      <span>💼 Cliente: <span class="bold" id="clienteNombre">...</span></span>
+      <span>💱 Dólar: <span class="bold" id="tipoCambio">S/ ...</span></span>
+      <span>👁️ Visitante N.º <span class="bold" id="visitanteID">...</span></span>
+    </div>
+  </header>
+
+  <!-- Modal para ver imagen -->
+  <div id="modal" onclick="cerrarModal()">
+    <img id="modal-img" src="" alt="Imagen del producto">
+  </div>
+
+  <div class="loading" style="text-align:center;font-size:1.2em;margin-top:40px;">Cargando productos...</div>
+  <table style="display: none; width: 100%; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; border-collapse: collapse;">
+    <thead style="background-color: #2d6cdf; color: white;">
+      <tr>
+        <th style="padding:12px 15px;text-align:left;">Código</th>
+        <th style="padding:12px 15px;text-align:left;">Descripción</th>
+        <th style="padding:12px 15px;text-align:left;">Detalles</th>
+        <th style="padding:12px 15px;text-align:left;">Stock</th>
+        <th style="padding:12px 15px;text-align:left;">Precio</th>
+        <th style="padding:12px 15px;text-align:left;">Foto</th>
+      </tr>
+    </thead>
+    <tbody id="tabla-productos"></tbody>
+  </table>
+
+  $1📅 Vigencia: 48 horas a partir de la fecha de emisión.<br>
+⚠️ Los precios y el stock pueden variar sin previo aviso.<br>
+🚚 No incluye flete ni costos de traslado.<br>
+🛡️ Garantía brindada directamente por el fabricante.$3
+  </footer>
+
+  <script>
+    async function verificarClave() {
+      const claveIngresada = document.getElementById("claveInput").value.trim();
+      const respuesta = await fetch('https://raw.githubusercontent.com/Digicodeperu/RED/main/filtro.txt');
+      const texto = await respuesta.text();
+      const claves = texto.trim().split('\n');
+      const claveCorrecta = claves[0].trim();
+      const clienteNombre = await fetch('https://raw.githubusercontent.com/Digicodeperu/RED/main/coti.txt')
+        .then(res => res.text())
+        .then(txt => txt.trim().split('\n')[0] || 'Desconocido');
+      if (claveIngresada === claveCorrecta) {
+        document.getElementById("login").style.display = "none";
+        document.getElementById("clienteNombre").textContent = clienteNombre;
+      } else {
+        document.getElementById("errorClave").innerText = "Clave incorrecta.";
+      }
+    }
+
+    async function cargarTipoCambio() {
+      try {
+        const res = await fetch('https://api.apis.net.pe/v1/tipo-cambio-sunat');
+        const data = await res.json();
+        document.getElementById("tipoCambio").textContent = `S/ ${data.venta}`;
+      } catch (error) {
+        document.getElementById("tipoCambio").textContent = "S/ 3.59";
+      }
+    }
+
+    function generarVisitanteID() {
+      const fecha = new Date();
+      const year = fecha.getFullYear().toString().slice(-2);
+      const start = new Date(fecha.getFullYear(), 0, 0);
+      const diff = fecha - start + (start.getTimezoneOffset() - fecha.getTimezoneOffset()) * 60000;
+      const dayOfYear = Math.floor(diff / 86400000);
+      const visitante = parseInt(`${year}${dayOfYear.toString().padStart(3, '0')}`);
+      document.getElementById("visitanteID").textContent = visitante;
+    }
+
+    function abrirModal(src) {
+      document.getElementById("modal-img").src = src;
+      document.getElementById("modal").style.display = "flex";
+    }
+
+    function cerrarModal() {
+      document.getElementById("modal").style.display = "none";
+      document.getElementById("modal-img").src = "";
+    }
+
+    cargarTipoCambio();
+    generarVisitanteID();
+  </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+  async function cargarFiltro() {
+    const res = await fetch("https://raw.githubusercontent.com/Digicodeperu/RED/main/filtro.txt");
+    const txt = await res.text();
+    return txt.split("
+").map(x => x.trim()).filter(x => x.length > 0);
+  }
+
+  async function cargarExcel() {
+    const res = await fetch("https://raw.githubusercontent.com/Digicodeperu/RED/main/productos.xlsx");
+    const data = await res.arrayBuffer();
+    const workbook = XLSX.read(data, { type: "array" });
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    return XLSX.utils.sheet_to_json(sheet);
+  }
+
+  function generarLinkImagen(codigo) {
+    const cod = codigo.toLowerCase();
+    const sub1 = cod.substring(0, 2);
+    let sub2 = cod.substring(2, 4);
+    if (cod.includes("wd")) sub2 = "dw";
+    return `https://imagenes.deltron.com.pe/images/productos//items/large/${sub1}/${sub2}/${cod}.jpg`;
+  }
+
+  function crearFila(p) {
+    const tr = document.createElement("tr");
+    const precio = Math.round(Number(p["PRECIO EN SOLES"] || 0)).toLocaleString("es-PE");
+    const linkImg = generarLinkImagen(p["CODIGO"]);
+    tr.innerHTML = `
+      <td style="padding:12px 15px;">${p["MINI CODIGO"]}</td>
+      <td style="padding:12px 15px;">${p["DESCRIPCION"]}</td>
+      <td style="padding:12px 15px;">${p["DETALLES"]}</td>
+      <td style="padding:12px 15px;">${p["STOCK"]}</td>
+      <td style="padding:12px 15px;">S/ ${precio}</td>
+      <td style="padding:12px 15px;"><a href="javascript:void(0);" onclick="abrirModal('${linkImg}')">Ver FOTO</a></td>
+    `;
+    return tr;
+  }
+
+  async function mostrarProductos() {
+    const [filtro, productos] = await Promise.all([cargarFiltro(), cargarExcel()]);
+    const cuerpo = document.getElementById("tabla-productos");
+    const tabla = document.querySelector("table");
+    const loading = document.querySelector(".loading");
+
+    productos
+      .filter(p => filtro.includes(String(p["MINI CODIGO"]).trim()))
+      .forEach(p => cuerpo.appendChild(crearFila(p)));
+
+    tabla.style.display = "table";
+    loading.style.display = "none";
+  }
+
+  mostrarProductos();
+</script>
 </body>
 </html>
