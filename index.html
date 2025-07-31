@@ -86,20 +86,32 @@
       return XLSX.utils.sheet_to_json(sheet);
     }
 
-    function crearFila(p) {
-      const tr = document.createElement("tr");
-      const precio = Math.round(Number(p["PRECIO EN SOLES"] || 0));
-      const img = "https://www.deltron.com.pe/modulos/productos/items/image_ext.php?item=" + p["CODIGO"];
-      tr.innerHTML = `
-        <td>${p["MINI CODIGO"]}</td>
-        <td>${p["DESCRIPCION"]}</td>
-        <td>${p["DETALLES"]}</td>
-        <td>${p["STOCK"]}</td>
-        <td>S/ ${precio}</td>
-        <td><a href="${img}" target="_blank">Ver FOTO</a></td>
-      `;
-      return tr;
-    }
+    function generarLinkImagen(codigo) {
+  const cod = codigo.toLowerCase();
+  const sub1 = cod.substring(0, 2);
+  let sub2 = cod.substring(2, 4);
+
+  if (cod.includes("wd")) {
+    sub2 = "dw";  // Excepción para Western Digital
+  }
+
+  return `https://imagenes.deltron.com.pe/images/productos//items/large/${sub1}/${sub2}/${cod}.jpg`;
+}
+
+function crearFila(p) {
+  const tr = document.createElement("tr");
+  const precio = Math.round(Number(p["PRECIO EN SOLES"] || 0));
+  const linkImg = generarLinkImagen(p["CODIGO"]);
+  tr.innerHTML = `
+    <td>${p["MINI CODIGO"]}</td>
+    <td>${p["DESCRIPCION"]}</td>
+    <td>${p["DETALLES"]}</td>
+    <td>${p["STOCK"]}</td>
+    <td>S/ ${precio}</td>
+    <td><a href="${linkImg}" target="_blank">Ver FOTO</a></td>
+  `;
+  return tr;
+}
 
     async function mostrarProductos() {
       const [filtro, productos] = await Promise.all([cargarFiltro(), cargarExcel()]);
