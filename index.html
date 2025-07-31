@@ -146,3 +146,30 @@
 </script>
 
 
+<div style="text-align: center; color: #555; font-style: italic; margin-top: 40px;">
+  💡 <strong>¿Sabías que…?</strong> La primera programadora de la historia fue <b>Ada Lovelace</b>, quien en 1843 escribió el primer algoritmo para una máquina.  
+</div>
+
+
+<div id="sabiasque" style="text-align: center; color: #555; font-style: italic; margin-top: 40px; font-size: 20px;">
+</div>
+
+<script>
+  const curiosidades = [
+    { texto: "La primera programadora de la historia fue Ada Lovelace en 1843.", autor: "Ada Lovelace" },
+    { texto: "El primer virus informático fue creado en 1986 y se llamaba Brain.", autor: "Basit & Amjad Farooq Alvi" },
+    { texto: "La contraseña más usada del mundo sigue siendo 123456.", autor: "NordPass Study" },
+    { texto: "El primer mouse fue construido en madera en 1964.", autor: "Douglas Engelbart" },
+    { texto: "El lenguaje Python fue nombrado por el grupo de comedia Monty Python.", autor: "Guido van Rossum" }
+  ];
+
+  function mostrarCuriosidad() {
+    const item = curiosidades[Math.floor(Math.random() * curiosidades.length)];
+    document.getElementById("sabiasque").innerHTML = `💡 <strong>¿Sabías que…?</strong> ${item.texto}<br>— <em>${item.autor}</em>`;
+  }
+
+  window.onload = mostrarCuriosidad;
+</script>
+
+</body>
+</html>
