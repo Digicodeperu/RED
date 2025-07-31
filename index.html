@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -46,10 +45,51 @@
       font-size: 1.2em;
       margin-top: 40px;
     }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 10000;
+      padding-top: 60px;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.8);
+    }
+
+    .modal-content {
+      margin: auto;
+      display: block;
+      max-width: 90%;
+      max-height: 80%;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+
+    .close {
+      position: absolute;
+      top: 25px;
+      right: 35px;
+      color: white;
+      font-size: 35px;
+      font-weight: bold;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
- 
+
+<header style="background:#1e3a8a;color:white;padding:20px;border-radius:8px;margin-bottom:20px;text-align:center;">
+  <h1 style="margin:0;font-size:24px;">ServiComp – Cotización Personalizada</h1>
+  <p style="margin:4px 0;font-style:italic;">"Equipos confiables, soluciones inteligentes”</p>
+  <p id="encabezado-info" style="margin-top:10px;font-weight:500;"></p>
+</header>
+
+
+
 
   <div class="loading">Cargando productos...</div>
   <table style="display: none;">
@@ -83,31 +123,31 @@
     }
 
     function generarLinkImagen(codigo) {
-  const cod = codigo.toLowerCase();
-  const sub1 = cod.substring(0, 2);
-  let sub2 = cod.substring(2, 4);
+      const cod = codigo.toLowerCase();
+      const sub1 = cod.substring(0, 2);
+      let sub2 = cod.substring(2, 4);
 
-  if (cod.includes("wd")) {
-    sub2 = "dw";  // Excepción para Western Digital
-  }
+      if (cod.includes("wd")) {
+        sub2 = "dw";  // Excepción para Western Digital
+      }
 
-  return `https://imagenes.deltron.com.pe/images/productos//items/large/${sub1}/${sub2}/${cod}.jpg`;
-}
+      return `https://imagenes.deltron.com.pe/images/productos//items/large/${sub1}/${sub2}/${cod}.jpg`;
+    }
 
-function crearFila(p) {
-  const tr = document.createElement("tr");
-  const precio = Math.round(Number(p["PRECIO EN SOLES"] || 0));
-  const linkImg = generarLinkImagen(p["CODIGO"]);
-  tr.innerHTML = `
-    <td>${p["MINI CODIGO"]}</td>
-    <td>${p["DESCRIPCION"]}</td>
-    <td>${p["DETALLES"]}</td>
-    <td>${p["STOCK"]}</td>
-    <td>S/ ${precio}</td>
-    <td><a href="${linkImg}" target="_blank">Ver FOTO</a></td>
-  `;
-  return tr;
-}
+    function crearFila(p) {
+      const tr = document.createElement("tr");
+      const precio = Math.round(Number(p["PRECIO EN SOLES"] || 0));
+      const linkImg = generarLinkImagen(p["CODIGO"]);
+      tr.innerHTML = `
+        <td>${p["MINI CODIGO"]}</td>
+        <td>${p["DESCRIPCION"]}</td>
+        <td>${p["DETALLES"]}</td>
+        <td>${p["STOCK"]}</td>
+        <td>S/ ${precio.toLocaleString('es-PE')}</td>
+        <td><a href="#" onclick="mostrarModal('${linkImg}'); return false;">Ver FOTO</a></td>
+      `;
+      return tr;
+    }
 
     async function mostrarProductos() {
       const [filtro, productos] = await Promise.all([cargarFiltro(), cargarExcel()]);
@@ -124,33 +164,109 @@ function crearFila(p) {
     }
 
     mostrarProductos();
+
+    function mostrarModal(src) {
+      const modal = document.getElementById("imgModal");
+      const modalImg = document.getElementById("modalImg");
+      const span = document.querySelector(".close");
+
+      modal.style.display = "block";
+      modalImg.src = src;
+
+      span.onclick = function () {
+        modal.style.display = "none";
+        modalImg.src = "";
+      }
+
+      window.onclick = function (event) {
+        if (event.target === modal) {
+          modal.style.display = "none";
+          modalImg.src = "";
+        }
+      }
+    }
   </script>
 
-<div id="login" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:9999;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:Arial,sans-serif;">
-  <h2>Acceso restringido</h2>
-  <input id="claveInput" placeholder="Ingrese clave" style="padding:10px;font-size:16px;border:1px solid #ccc;border-radius:4px;">
-  <button onclick="verificarClave()" style="margin-top:10px;padding:10px 20px;font-size:16px;">Entrar</button>
-  <p id="errorClave" style="color:red;margin-top:10px;"></p>
-</div>
-<script>
-  async function verificarClave() {
-    const claveIngresada = document.getElementById("claveInput").value.trim();
-    const respuesta = await fetch('https://raw.githubusercontent.com/Digicodeperu/RED/main/filtro.txt');
-    const texto = await respuesta.text();
-    const claves = texto.trim().split('\n');
-    const claveCorrecta = claves[0].trim();
-    if (claveIngresada === claveCorrecta) {
-      document.getElementById("login").style.display = "none";
-    } else {
-      document.getElementById("errorClave").innerText = "Clave incorrecta.";
+  <!-- Modal HTML -->
+  <div id="imgModal" class="modal">
+    <span class="close">&times;</span>
+    <img class="modal-content" id="modalImg">
+  </div>
+
+  <div id="login" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:9999;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:Arial,sans-serif;">
+    <h2>Ingrese clave de distribuidor</h2>
+    <input id="claveInput" placeholder="Ingrese clave" style="padding:10px;font-size:16px;border:1px solid #ccc;border-radius:4px;">
+    <button onclick="verificarClave()" style="margin-top:10px;padding:10px 20px;font-size:16px;">Entrar</button>
+    <p id="errorClave" style="color:red;margin-top:10px;"></p>
+  </div>
+  <script>
+    async function verificarClave() {
+      const claveIngresada = document.getElementById("claveInput").value.trim();
+      const respuesta = await fetch('https://raw.githubusercontent.com/Digicodeperu/RED/main/filtro.txt');
+      const texto = await respuesta.text();
+      const claves = texto.trim().split('\n');
+      const claveCorrecta = claves[0].trim();
+      if (claveIngresada === claveCorrecta) {
+        document.getElementById("login").style.display = "none";
+      } else {
+        document.getElementById("errorClave").innerText = "Clave incorrecta.";
+      }
     }
+  </script>
+
+
+
+
+
+<script>
+  async function cargarDatosEncabezado() {
+    // Cargar nombre del cliente desde coti.txt
+    const resCliente = await fetch("https://raw.githubusercontent.com/Digicodeperu/RED/main/coti.txt");
+    const textoCliente = await resCliente.text();
+    const cliente = textoCliente.trim().split('\n')[0] || "Cliente";
+
+    // Obtener tipo de cambio desde API del BCRP
+    let tipoCambio = "3.59"; // valor por defecto
+    try {
+      const hoy = new Date();
+      const yyyy = hoy.getFullYear();
+      const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+      const dd = String(hoy.getDate()).padStart(2, '0');
+      const fecha = `${yyyy}-${mm}-${dd}`;
+      const bcrp = await fetch(`https://api.apis.net.pe/v1/tipo-cambio-sunat?fecha=${fecha}`);
+      const data = await bcrp.json();
+      tipoCambio = data.venta || tipoCambio;
+    } catch (err) {
+      console.warn("No se pudo obtener tipo de cambio:", err);
+    }
+
+    // Generar número de visitante YYDDD
+    const hoy = new Date();
+    const start = new Date(hoy.getFullYear(), 0, 0);
+    const diff = hoy - start + ((start.getTimezoneOffset() - hoy.getTimezoneOffset()) * 60 * 1000);
+    const diaDelAnio = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const visitante = `${String(hoy.getFullYear()).slice(2)}${String(diaDelAnio).padStart(3, '0')}`;
+
+    // Actualizar contenido
+    document.getElementById("encabezado-info").innerHTML = 
+      `💼 <strong>Cliente:</strong> ${cliente}  💱 <strong>Dólar:</strong> S/ ${parseFloat(tipoCambio).toFixed(2)}  👁️ <strong>Visitante N.º</strong> ${visitante}`;
   }
+
+  cargarDatosEncabezado();
 </script>
 
 
+<footer style="margin-top:40px;padding:20px;background:#f1f5f9;color:#374151;border-radius:8px;">
+  <h3 style="margin-bottom:10px;">⚠️ Condiciones de la cotización</h3>
+  <ul style="padding-left:20px;line-height:1.6;">
+    <li><strong>Vigencia:</strong> 48 horas a partir de la fecha de emisión.</li>
+    <li>Los precios y el stock pueden variar sin previo aviso.</li>
+    <li>No incluye flete ni costos de traslado.</li>
+    <li>Garantía brindada directamente por el fabricante.</li>
+  </ul>
+</footer>
 
-<div id="sabiasque" style="text-align: center; color: #555; font-style: italic; margin-top: 14px; font-size: 14px;">
-</div>
+
 
 
 </body>
