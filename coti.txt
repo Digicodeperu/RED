@@ -1,6 +1,4 @@
 Cliente: ServiComp
-Margen: 5.01265
-Flete: 19
 
 
 
