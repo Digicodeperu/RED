@@ -78,7 +78,22 @@
       font-weight: bold;
       cursor: pointer;
     }
-  </style>
+  
+.tr-destacada {
+  background-color: #e0f2fe; /* celeste suave */
+  animation: fadeInHighlight 0.6s ease-in-out;
+}
+@keyframes fadeInHighlight {
+  from {
+    background-color: #f0f9ff;
+    opacity: 0;
+  }
+  to {
+    background-color: #e0f2fe;
+    opacity: 1;
+  }
+}
+</style>
 </head>
 <body>
 
@@ -114,7 +129,13 @@
       return txt.split("\n").map(x => x.trim()).filter(x => x.length > 0);
     }
 
-    async function cargarExcel() {
+    
+async function cargarCoti() {
+  const res = await fetch("https://raw.githubusercontent.com/Digicodeperu/RED/main/coti.txt");
+  const txt = await res.text();
+  return txt.split("\n").map(x => x.trim()).filter(x => x.length > 0);
+}
+async function cargarExcel() {
       const res = await fetch("https://raw.githubusercontent.com/Digicodeperu/RED/main/productos.xlsx");
       const data = await res.arrayBuffer();
       const workbook = XLSX.read(data, { type: "array" });
@@ -134,36 +155,52 @@
       return `https://imagenes.deltron.com.pe/images/productos//items/large/${sub1}/${sub2}/${cod}.jpg`;
     }
 
-    function crearFila(p) {
-      const tr = document.createElement("tr");
-      const precio = Math.round(Number(p["PRECIO EN SOLES"] || 0));
-      const linkImg = generarLinkImagen(p["CODIGO"]);
-      tr.innerHTML = `
-        <td>${p["MINI CODIGO"]}</td>
-        <td>${p["DESCRIPCION"]}</td>
-        <td>${p["DETALLES"]}</td>
-        <td>${p["STOCK"]}</td>
-        <td>S/ ${precio.toLocaleString('es-PE')}</td>
-        <td><a href="#" onclick="mostrarModal('${linkImg}'); return false;">Ver FOTO</a></td>
-      `;
-      return tr;
-    }
+    
+function crearFila(p, destacados) {
+  const tr = document.createElement("tr");
+  const precio = Math.round(Number(p["PRECIO EN SOLES"] || 0));
+  const linkImg = generarLinkImagen(p["CODIGO"]);
+  const mini = String(p["MINI CODIGO"]).trim();
+  const esDestacado = destacados.includes(mini);
+  const miniHTML = esDestacado ? `<strong style="color:#0f172a;">⭐ ${mini}</strong>` : mini;
 
-    async function mostrarProductos() {
-      const [filtro, productos] = await Promise.all([cargarFiltro(), cargarExcel()]);
-      const cuerpo = document.getElementById("tabla-productos");
-      const tabla = document.querySelector("table");
-      const loading = document.querySelector(".loading");
+  if (esDestacado) {
+    tr.classList.add("tr-destacada");
+    tr.title = "Producto sugerido por ServiComp";
+  }
 
-      productos
-        .filter(p => filtro.includes(String(p["MINI CODIGO"]).trim()))
-        .forEach(p => cuerpo.appendChild(crearFila(p)));
+  tr.innerHTML = `
+    <td>${miniHTML}</td>
+    <td>${p["DESCRIPCION"]}</td>
+    <td>${p["DETALLES"]}</td>
+    <td>${p["STOCK"]}</td>
+    <td>S/ ${precio.toLocaleString('es-PE')}</td>
+    <td><a href="#" onclick="mostrarModal('${linkImg}'); return false;">Ver FOTO</a></td>
+  `;
+  return tr;
+}
 
-      tabla.style.display = "table";
-      loading.style.display = "none";
-    }
 
-    mostrarProductos();
+    
+async function mostrarProductos() {
+  const [filtro, productos, destacados] = await Promise.all([
+    cargarFiltro(),
+    cargarExcel(),
+    cargarCoti()
+  ]);
+
+  const cuerpo = document.getElementById("tabla-productos");
+  const tabla = document.querySelector("table");
+  const loading = document.querySelector(".loading");
+
+  productos
+    .filter(p => filtro.includes(String(p["MINI CODIGO"]).trim()))
+    .forEach(p => cuerpo.appendChild(crearFila(p, destacados)));
+
+  tabla.style.display = "table";
+  loading.style.display = "none";
+}
+mostrarProductos();
 
     function mostrarModal(src) {
       const modal = document.getElementById("imgModal");
